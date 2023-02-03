@@ -8,18 +8,17 @@ from flask_login import UserMixin, LoginManager
 from flask_marshmallow import Marshmallow
 
 db =SQLAlchemy()
-
 login_manager = LoginManager()
 ma = Marshmallow()
 
 @login_manager.user_loader
 def load_user(user_id):
-
     return User.query.get(user_id)
+
 class User(db.Model, UserMixin):
-    id = db.Column(db.String, primary_key = True)
-    first_name = db.Column(db.String(150), nullable = True, default = '')
-    last_name = db.Column(db.String(150), nullable = True, default = '')
+    id = db.Column(db.String, primary_key = True)   
+    first_name = db.Column(db.String(150), nullable = False, default = '')
+    last_name = db.Column(db.String(150), nullable = False, default = '')
     email = db.Column(db.String(150), nullable = False)
     password = db.Column(db.String, nullable = False)
     token = db.Column(db.String, default = '', unique = True)
@@ -54,9 +53,9 @@ class Car(db.Model):
     model = db.Column(db.String(150))
     price = db.Column(db.NUMERIC(precision=20,scale=2))
     mpg = db.Column(db.String(50))
-    max_speed = db.Column(db.String(50))
+    max_speed = db.Column(db.Integer)
     user_token=db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
-    # random_joke = db.Column(db.String)
+
 
 
     def __init__(self, make, model, price, mpg, max_speed, user_token, id=''):
@@ -67,13 +66,12 @@ class Car(db.Model):
         self.max_speed = max_speed
         self.mpg = mpg
         self.user_token = user_token
-        # self.random_joke = random_joke
 
     def set_id(self):
         return secrets.token_urlsafe()
 
     def __repr__(self):
-        return f"The following drone has been added {self.name}"
+        return f"The following car has been added {self.name}"
 
 class CarSchema(ma.Schema):
     class Meta:
